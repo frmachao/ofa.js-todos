@@ -1,0 +1,89 @@
+<!-- comp1.html -->
+<template component>
+    <l-m src="./components/create-todo.html"></l-m>
+    <l-m src="./components/todo-item.html"></l-m>
+    <style>
+        :host {
+            display: block;
+            padding: 10px;
+            margin: 10px;
+            width: 100%;
+            max-width: 420px;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        header {
+            position: sticky;
+            top: 0px;
+            z-index: 9;
+            background-color: white;
+        }
+
+        .border {
+            height: 1px;
+            width: 100%;
+            background-color: #e5e7eb;
+        }
+
+        .status-menu {
+            display: flex;
+            justify-content: space-between;
+            padding-top: 0.5rem;
+            padding-bottom: 0.25rem;
+        }
+
+        .fill-container {
+            overflow: auto;
+        }
+    </style>
+    <section style="padding: 16px; background-color: #ffff">
+        <header>
+            <h3>ofa.js Todos </h3>
+            <div class="border"></div>
+            <div class="status-menu">
+                <div>completed: {{getCompleteCount()||0}}/{{todos.length}}</div>
+                <button on:click="handleClear">clear all</button>
+            </div>
+            <create-todo></create-todo>
+        </header>
+        <div id="fill-container">
+            <x-fill name="fillTemplate" :value="todos"></x-fill>
+        </div>
+        <template name="fillTemplate">
+            <todo-item :id="$data.id" :status="$data.status" :text="$data.text"></todo-item>
+        </template>
+    </section>
+    <script>
+        export const tag = "todo-app";
+
+        export default async function ({load}) {
+            const { data } = await load("./data.mjs");
+            return {
+                data: {
+                    todos: [{ id: 0, status: 1, text: 'eat!' }],
+                    status: { 0: "In Progress", 1: "Done" },
+                },
+                attached() {
+                    this.todos = data.todos;
+                    this.status = data.status
+                },
+                detached() {
+                    this.todos = null;
+                    this.status = null;
+                },
+                proto: {
+                    handleClear() {
+                        this.todos = []
+                    },
+                    getCompleteCount() {
+                        const completedTodo = this.todos.filter((item) => item.status === 1)
+                        return completedTodo.length
+                    },
+                }
+            };
+        }
+    </script>
+</template>

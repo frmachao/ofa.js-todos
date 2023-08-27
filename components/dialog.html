@@ -1,0 +1,61 @@
+<template component>
+    <style>
+        .dialog-container {
+            background-color: #80808099;
+            display: flex;
+            align-items: center;
+            width: 100vw;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 999;
+        }
+
+        .dialog-content {
+            padding: 1.25rem;
+            background-color: #ffff;
+            display: flex;
+            flex-direction: column;
+            margin: auto;
+            max-width: fit-content;
+            width: 80%;
+            word-break: break-word;
+        }
+
+        button {
+            overflow-wrap: normal;
+            word-break: normal;
+            cursor: pointer;
+            margin-top: 0.5rem;
+            padding: 0.25rem;
+        }
+    </style>
+    <section class="dialog-container">
+        <section class="dialog-content">
+            <textarea sync:value="text" rows="5" cols="50">
+            </textarea>
+            <button on:click="handleSave">save</button>
+        </section>
+    </section>
+    <script>
+        export const tag = "todo-dialog";
+        export default async function ({load}) {
+            const { data } = await load("../data.mjs");
+            return {
+                data: {
+                    text: "",
+                    id: "",
+                },
+                proto: {
+                    handleSave() {
+                        const index = data.todos.findIndex(e => e.id === this.id);
+                        const currentTodo = data.todos[index];
+                        currentTodo.text = this.text;
+                        this.emit('close-dialog',{},{composed:true})
+                    }
+                }
+            };
+        }
+    </script>
+</template>

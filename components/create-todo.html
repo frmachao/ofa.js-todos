@@ -1,0 +1,50 @@
+<template component>
+    <link href="../style.css"/>
+    <style>
+        .create-todo {
+            display: flex;
+            margin-top: 0.25rem;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        input {
+            width: 100%;
+            padding: 0.25rem;
+            margin-left: 0.25rem;
+        }
+    </style>
+    <div class="create-todo">
+        <button on:click="handlerAdd">+</button>
+        <input on:keydown="handleKeyDown" sync:value="inputValue" placeholder="add a todo..." class="my-input"
+            type="text" />
+    </div>
+    <script>
+        export const tag = "create-todo";
+        export default async function ({load}) {
+            const { data } = await load("../data.mjs");
+            return {
+                data: {
+                    inputValue: "",
+                },
+                proto: {
+                    handlerAdd() {
+                        console.log('data.todos==',data.todos)
+                        if (this.inputValue.trim().length > 0) {
+                            const id = new Date().valueOf();
+                            data.todos.push({ id, text: this.inputValue, status: 0 });
+                        }
+                    },
+                    handleKeyDown(e) {
+                        if (e.key === "Enter") {
+                            this.handlerAdd();
+                            this.inputValue = ''
+                        }
+                    }
+                }
+            };
+        }
+    </script>
+</template>

@@ -1,0 +1,83 @@
+<template component>
+    <l-m src="./dialog.html"></l-m>
+    <style>
+        .todo-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            word-break: break-word;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        .item-left {
+            display: flex;
+            word-break: break-word;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .item-right {
+            display: flex;
+            word-break: break-word;
+            gap: 0.5rem;
+        }
+    </style>
+    <section class="todo-item" style="margin: 10px 10px 10px 0px; padding: 10px; border-bottom: #e5e7eb solid 1px">
+        <div class="item-left">
+            <input type="checkbox" :checked="status" on:change="handleCheck">
+            {{text}}
+        </div>
+        <div class="item-right">
+            <button class="my-button" on:click="handleEdit">edit</button>
+            <button on:click="handleDelete">delete</button>
+        </div>
+    </section>
+    <x-if :value="showDialog">
+        <todo-dialog  :id="id" :text="text"></todo-dialog>
+    </x-if>
+    <script>
+        export const tag = "todo-item";
+        export default async function ({load}) {
+            const { data } = await load("../data.mjs");
+            return {
+                data: {
+                    text: "",
+                    status: "",
+                    id: "",
+                    showDialog: false
+                },
+                ready(){
+                    this.on('close-dialog',()=>{
+                        this.showDialog = false
+                    })
+                },
+                proto: {
+                    handleCheck(e) {
+                        if (e.target) {
+                            const currentTodo = $("todo-app").todos.find(e => e.id === this.id);
+                            if (e.target.checked) {
+                                currentTodo.status = 1
+                            } else {
+                                currentTodo.status = 0
+                            }
+                        }
+                    },
+                    handleDelete() {
+                        const r = confirm('Are you sure you want to delete this todo?');
+                        if (r == true) {
+                            const newTodos = data.todos.filter(item => item.id !== this.id);
+                            console.log('newTodos==',newTodos);
+                            data.todos = newTodos;
+                        }
+                    },
+                    handleEdit() {
+                        this.showDialog = true
+                    },
+                }
+            };
+        }
+    </script>
+</template>
