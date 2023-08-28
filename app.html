@@ -41,16 +41,16 @@
     </style>
     <section style="padding: 16px; background-color: #ffff">
         <header>
-            <h3>ofa.js Todos </h3>
+            <h3>ofa.js Todos</h3>
             <div class="border"></div>
             <div class="status-menu">
-                <div>completed: {{getCompleteCount()||0}}/{{todos.length}}</div>
+                <div>completed: {{getCompleteCount()||0}}/{{main.todos.length}}</div>
                 <button on:click="handleClear">clear all</button>
             </div>
             <create-todo></create-todo>
         </header>
         <div id="fill-container">
-            <x-fill name="fillTemplate" :value="todos"></x-fill>
+            <x-fill name="fillTemplate" :value="main.todos"></x-fill>
         </div>
         <template name="fillTemplate">
             <todo-item :id="$data.id" :status="$data.status" :text="$data.text"></todo-item>
@@ -59,30 +59,29 @@
     <script>
         export const tag = "todo-app";
 
-        export default async function ({load}) {
+        export default async function ({ load }) {
             const { data } = await load("./data.mjs");
             return {
                 data: {
-                    todos: [{ id: 0, status: 1, text: 'eat!' }],
-                    status: { 0: "In Progress", 1: "Done" },
+                    main: {},
                 },
                 attached() {
-                    this.todos = data.todos;
-                    this.status = data.status
+                    this.main = data;
                 },
                 detached() {
-                    this.todos = null;
-                    this.status = null;
+                    this.main = {};
                 },
                 proto: {
                     handleClear() {
-                        this.todos = []
+                        this.main.todos.splice(0);
                     },
                     getCompleteCount() {
-                        const completedTodo = this.todos.filter((item) => item.status === 1)
-                        return completedTodo.length
+                        const completedTodo = this.main.todos.filter(
+                            (item) => item.status === 1
+                        );
+                        return completedTodo.length;
                     },
-                }
+                },
             };
         }
     </script>

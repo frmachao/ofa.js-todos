@@ -57,7 +57,7 @@
                 proto: {
                     handleCheck(e) {
                         if (e.target) {
-                            const currentTodo = $("todo-app").todos.find(e => e.id === this.id);
+                            const currentTodo = data.todos.find(e => e.id === this.id);
                             if (e.target.checked) {
                                 currentTodo.status = 1
                             } else {
@@ -68,9 +68,8 @@
                     handleDelete() {
                         const r = confirm('Are you sure you want to delete this todo?');
                         if (r == true) {
-                            const newTodos = data.todos.filter(item => item.id !== this.id);
-                            console.log('newTodos==',newTodos);
-                            data.todos = newTodos;
+                            const index = data.todos.findIndex(item => item.id === this.id);
+                            data.todos.splice(index,1);
                         }
                     },
                     handleEdit() {

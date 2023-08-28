@@ -31,7 +31,6 @@
                 },
                 proto: {
                     handlerAdd() {
-                        console.log('data.todos==',data.todos)
                         if (this.inputValue.trim().length > 0) {
                             const id = new Date().valueOf();
                             data.todos.push({ id, text: this.inputValue, status: 0 });

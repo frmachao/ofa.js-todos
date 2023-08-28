@@ -1,6 +1,6 @@
 # ofa.js-todos
 
-![](./images/1.png)
+![](./images/ofa-todos.gif)
 
 ## quick start
 
